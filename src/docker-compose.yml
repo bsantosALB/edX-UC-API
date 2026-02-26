@@ -1,0 +1,32 @@
+services: 
+    edx_producer:
+        build: ./
+        container_name: edx_producer
+        #networks:
+        #    front:
+        #        ipv4_address: 172.220.18.0
+        command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000 --log-level error
+        ports:
+            - "6200:8000"
+        #restart: always
+        volumes:
+            - "./app/logs:/usr/src/app/logs"
+        env_file:
+            - .env
+        depends_on:
+            - mongodb_container
+    
+
+    mongodb_container:
+        image: mongo:latest
+        #environment:
+        #    MONGO_INITDB_ROOT_USERNAME: root
+        #    MONGO_INITDB_ROOT_PASSWORD: rootpassword
+        ports:
+            - 27017:27017
+        volumes:
+            - mongodb_data_container:/data/db
+
+volumes:
+    mongodb_data_container:
+
